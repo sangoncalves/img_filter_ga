@@ -130,10 +130,126 @@ for _ in range(population_size):
     ind = individual()
     population.append(ind)
 
+
+
 #mutation
 #weights -> +- 0.0001*k
 #index -> binary change. 
-class mutation():
+def mutate(individual):
+    population = []
+    prob1 = random.uniform(0, 1)
+    if prob1>0.6:
+        if  individual.w1<=0.9995:
+            # individual.mutated_w1 = individual.w1[index]+0.0005
+            w1_mutated = individual.w1+0.0005
+        else:
+            # individual.mutated_w1 = individual.w1[index]-0.0005
+            w1_mutated = individual.w1-0.0005
+    else:
+        w1_mutated = individual.w1
+    prob2 = random.uniform(0, 1)
+    if prob2>0.6:
+        if  individual.w2<=0.9995:
+            # individual.mutated_w1 = individual.w1[index]+0.0005
+            w2_mutated = individual.w2+0.0005
+        else:
+            # individual.mutated_w1 = individual.w1[index]-0.0005
+            w2_mutated = individual.w2-0.0005
+    else:
+        w2_mutated = individual.w2
+    prob3 = random.uniform(0, 1)
+    if prob3>0.6:
+        if  individual.w3<=0.9995:
+            # individual.mutated_w1 = individual.w1[index]+0.0005
+            w3_mutated = individual.w3+0.0005
+        else:
+            # individual.mutated_w1 = individual.w1[index]-0.0005
+            w3_mutated = individual.w3-0.0005
+    else:
+        w3_mutated = individual.w3
+    for index_weight in individual.index_w1:
+        prob = random.uniform(0, 1)
+        iw1_list = []
+        if prob>0.6:
+            if index_weight==0:
+                iw1_list.append(1)
+            else:
+                iw1_list.append(0)
+    for index_weight in individual.index_w2:
+        prob = random.uniform(0, 1)
+        iw2_list = []
+        if prob>0.6:
+            if index_weight==0:
+                iw2_list.append(1)
+            else:
+                iw2_list.append(0)
+    for index_weight in individual.index_w3:
+        prob = random.uniform(0, 1)
+        iw3_list = []
+        if prob>0.6:
+            if index_weight==0:
+                iw3_list.append(1)
+            else:
+                iw3_list.append(0)
+    new_ind = new_individual(w1=w1_mutated,w2=w2_mutated,w3=w3_mutated,index_w1=iw1_list,index_w2=iw2_list,index_w3=iw3_list)
+    population.append(new_ind)
+    return population      
+
+
+
+
+
+class new_individual():
+    def __init__(self,w1,w2,w3,index_w1,index_w2,index_w3):
+        global shape,original_flat_arr,gray_scale_flat_arr
+        self.shape = shape
+        self.origin = original_flat_arr #origin = original from class img
+        self.target_arr = gray_scale_flat_arr # target = gray_scale from class img
+        self.len_flat_arr = len(self.origin)
+        self.w1, self.w2, self.w3=w1,w2,w3
+        self.index_w1,self.index_w2,self.index_w3 = index_w1,index_w2,index_w3
+        self.individual_output_img()
+        self.fitness_score()
+        self.individual_flat_arr2img()
+    def individual_output_img(self):
+        individual_flat_arr_img = self.w1*self.origin[self.index_w1]+self.w2*self.origin[self.index_w2]+self.w3*self.origin[self.index_w3]
+        self.individual_flat_arr_img = individual_flat_arr_img
+        return self.individual_flat_arr_img
+    def fitness_score(self):
+        # self.fitness = self.individual_flat_arr_img -self.target_arr #vector
+        # self.fitness = distance.euclidean(ind1.individual_flat_arr_img,ind1.target_arr)
+        self.fitness =  np.linalg.norm(self.individual_flat_arr_img -self.target_arr)
+        return self.fitness
+    def individual_flat_arr2img(self):
+        '''
+        Returning back to image from flat array and shape
+        '''
+        output_arr = np.asarray(self.individual_flat_arr_img).reshape(self.shape)
+        # output_individual_image = Image.fromarray(output_arr)
+        output_individual_image = Image.fromarray((output_arr * 255).astype(np.uint8))
+        self.output_individual_image = output_individual_image
+        return self.output_individual_image
+    def save_ind_output_img(self):
+        self.output_individual_image.save('image_dataset/individual_image.png')
+    def show_ind_output_img(self):
+        self.output_individual_image.show()
+    def save_weights_and_indexes(self):
+        '''
+        Saving the weights for future testing on other images. 
+        '''
+        weight_val1 = self.w1 * self.index_w1
+        weight_val2 = self.w2 * self.index_w2
+        weight_val3 = self.w3 * self.index_w3
+        weight_list = [weight_val1,weight_val2,weight_val3]
+        self.weight_list = weight_list
+        path_to_file = ('output/weights/output_weight_list.txt')
+        save_list(path_to_file,weight_list)
+        output_array = weight_val1 + weight_val2 + weight_val3
+        self.weight_arr = output_array
+        np.save('output/weights/output_weight_list.npy',output_array)
+        return self.weight_list,self.weight_arr
+
+
 
 
 #cross-over
@@ -162,32 +278,9 @@ distance.euclidean(ind1.individual_flat_arr_img,ind1.target_arr)
 print(len(ind1.index_w1))
 print(len(ind1.w1))
 
+ind_test = individual()
 
-
-class IndividualFactory:
-    
-    def __init__(self, genotype_length: int, fitness_evaluator: FitnessEvaluator):
-        self.genotype_length = genotype_length
-        self.fitness_evaluator = fitness_evaluator
-        # E.g. {:032b} to format a number on 32 bits with leading zeros
-        self.binary_string_format = '{:0' + str(self.genotype_length) + 'b}'
-    
-    def with_random_genotype(self):
-        genotype_max_value = 2 ** self.genotype_length
-        random_genotype = self.binary_string_format.format(random.randint(0, genotype_max_value))
-        fitness = self.fitness_evaluator.evaluate(random_genotype)
-        return Individual(random_genotype, fitness)
-    
-    def with_set_genotype(self, genotype: str):
-        fitness = self.fitness_evaluator.evaluate(genotype)
-        return Individual(genotype, fitness)
-    
-    def with_minimal_fitness(self):
-        minimal_fitness_genotype = self.binary_string_format.format(0)
-        fitness = self.fitness_evaluator.evaluate(minimal_fitness_genotype)
-        return Individual(minimal_fitness_genotype, fitness)
-
-
+new_population = mutate(ind_test)
 #TODO 
 '''
 -Create the generation
