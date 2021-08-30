@@ -20,7 +20,6 @@ import numpy as np
 import random
 
 
-
 def img2flat_arr(image_jpg):
     global shape,flat_arr
     arr = np.array(original_image)
@@ -37,6 +36,12 @@ def flat_arr2img(flat_arr):
     output_image.show()
     return output_image
 
+def save_list(path_to_file,my_list):
+    import io
+    # path_to_file = '3-summary_page_scrap_info_limiter/url_summary_missing.txt'
+    with io.open(path_to_file, "w",encoding="utf-8") as f:
+        for listitem in my_list:
+            f.write('%s\n' % listitem)
 
 class img():
     def __init__(self, image):
@@ -72,6 +77,9 @@ class individual():
         self.index_w1 = np.random.randint(2, size=len(self.origin))
         self.index_w2 = np.random.randint(2, size=len(self.origin))
         self.index_w3 = np.random.randint(2, size=len(self.origin))
+        self.individual_output_img()
+        self.fitness_score()
+        self.individual_flat_arr2img()
     def individual_output_img(self):
         individual_flat_arr_img = self.w1*self.origin[self.index_w1]+self.w2*self.origin[self.index_w2]+self.w3*self.origin[self.index_w3]
         self.individual_flat_arr_img = individual_flat_arr_img
@@ -86,22 +94,49 @@ class individual():
         Returning back to image from flat array and shape
         '''
         output_arr = np.asarray(self.individual_flat_arr_img).reshape(self.shape)
-        output_individual_image = Image.fromarray(output_arr)
+        # output_individual_image = Image.fromarray(output_arr)
+        output_individual_image = Image.fromarray((output_arr * 255).astype(np.uint8))
         self.output_individual_image = output_individual_image
         return self.output_individual_image
     def save_ind_output_img(self):
         self.output_individual_image.save('image_dataset/individual_image.png')
     def show_ind_output_img(self):
         self.output_individual_image.show()
+    def save_weights_and_indexes(self):
+        '''
+        Saving the weights for future testing on other images. 
+        '''
+        weight_val1 = self.w1 * self.index_w1
+        weight_val2 = self.w2 * self.index_w2
+        weight_val3 = self.w3 * self.index_w3
+        weight_list = [weight_val1,weight_val2,weight_val3]
+        self.weight_list = weight_list
+        path_to_file = ('output/weights/output_weight_list.txt')
+        save_list(path_to_file,weight_list)
+        output_array = weight_val1 + weight_val2 + weight_val3
+        self.weight_arr = output_array
+        np.save('output/weights/output_weight_list.npy',output_array)
+        return self.weight_list,self.weight_arr
+
+
+
     
-
-
-
 #loading Images
 original_image = Image.open('image_dataset/canada-best-lakes-moraine-lake.jpg')
-# target_image = original_image.convert('LA')
 
-# original_image.show()
+population =[]
+population_size=100
+for _ in range(population_size):
+    ind = individual()
+    population.append(ind)
+
+#mutation
+#weights -> +- 0.0001*k
+#index -> binary change. 
+class mutation():
+
+
+#cross-over
 
 #Tests for img class
 img = img(original_image)
@@ -128,6 +163,31 @@ print(len(ind1.index_w1))
 print(len(ind1.w1))
 
 
+
+class IndividualFactory:
+    
+    def __init__(self, genotype_length: int, fitness_evaluator: FitnessEvaluator):
+        self.genotype_length = genotype_length
+        self.fitness_evaluator = fitness_evaluator
+        # E.g. {:032b} to format a number on 32 bits with leading zeros
+        self.binary_string_format = '{:0' + str(self.genotype_length) + 'b}'
+    
+    def with_random_genotype(self):
+        genotype_max_value = 2 ** self.genotype_length
+        random_genotype = self.binary_string_format.format(random.randint(0, genotype_max_value))
+        fitness = self.fitness_evaluator.evaluate(random_genotype)
+        return Individual(random_genotype, fitness)
+    
+    def with_set_genotype(self, genotype: str):
+        fitness = self.fitness_evaluator.evaluate(genotype)
+        return Individual(genotype, fitness)
+    
+    def with_minimal_fitness(self):
+        minimal_fitness_genotype = self.binary_string_format.format(0)
+        fitness = self.fitness_evaluator.evaluate(minimal_fitness_genotype)
+        return Individual(minimal_fitness_genotype, fitness)
+
+
 #TODO 
 '''
 -Create the generation
@@ -138,21 +198,6 @@ https://towardsdatascience.com/simple-genetic-algorithm-by-a-simple-developer-in
 
 
 
-
-
-
-# ind1 = individual()
-
-# test = img_individual(original_image)
-# test.flat_arr2img()
-# test.img_show()
-# target.flat_arr2img()
-# target = img(target_image)
-#Getting the vector for the images
-# original_image_arr = img2flat_arr(original_image)
-# target_image_arr = img2flat_arr(target_image)
-
-# img.save('image/greyscale.png')
 
 
 #Create weights
