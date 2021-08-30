@@ -167,30 +167,31 @@ def mutate(individual):
             w3_mutated = individual.w3-0.0005
     else:
         w3_mutated = individual.w3
+    iw1_list = []
     for index_weight in individual.index_w1:
         prob = random.uniform(0, 1)
-        iw1_list = []
         if prob>0.6:
             if index_weight==0:
                 iw1_list.append(1)
             else:
                 iw1_list.append(0)
+    iw2_list = []
     for index_weight in individual.index_w2:
         prob = random.uniform(0, 1)
-        iw2_list = []
         if prob>0.6:
             if index_weight==0:
                 iw2_list.append(1)
             else:
                 iw2_list.append(0)
+    iw3_list = []
     for index_weight in individual.index_w3:
         prob = random.uniform(0, 1)
-        iw3_list = []
         if prob>0.6:
             if index_weight==0:
                 iw3_list.append(1)
             else:
                 iw3_list.append(0)
+    # print(w1_mutated,w2_mutated,w3_mutated,iw1_list,iw2_list,iw3_list)
     new_ind = new_individual(w1=w1_mutated,w2=w2_mutated,w3=w3_mutated,index_w1=iw1_list,index_w2=iw2_list,index_w3=iw3_list)
     population.append(new_ind)
     return population      
@@ -204,15 +205,18 @@ class new_individual():
         global shape,original_flat_arr,gray_scale_flat_arr
         self.shape = shape
         self.origin = original_flat_arr #origin = original from class img
+        # print('original_flat_arr: ',original_flat_arr)
         self.target_arr = gray_scale_flat_arr # target = gray_scale from class img
         self.len_flat_arr = len(self.origin)
         self.w1, self.w2, self.w3=w1,w2,w3
         self.index_w1,self.index_w2,self.index_w3 = index_w1,index_w2,index_w3
+        # print( index_w1,index_w2,index_w3)
         self.individual_output_img()
         self.fitness_score()
         self.individual_flat_arr2img()
     def individual_output_img(self):
         individual_flat_arr_img = self.w1*self.origin[self.index_w1]+self.w2*self.origin[self.index_w2]+self.w3*self.origin[self.index_w3]
+        # print('individual_flat_arr_img: ',individual_flat_arr_img)
         self.individual_flat_arr_img = individual_flat_arr_img
         return self.individual_flat_arr_img
     def fitness_score(self):
@@ -279,8 +283,20 @@ print(len(ind1.index_w1))
 print(len(ind1.w1))
 
 ind_test = individual()
+self.fitness =  np.linalg.norm(ind_test.individual_flat_arr_img -ind_test.target_arr)
 
+w1,w2,w3 = ind_test.w1, ind_test.w2, ind_test.w3
+index_w1,index_w2,index_w3 = ind_test.index_w1,ind_test.index_w2,ind_test.index_w3
+
+n_ind_set_param = new_individual(w1,w2,w3,index_w1,index_w2,index_w3)
+n_ind_set_param.index_w2
+len(n_ind_set_param.index_w2)
+for ind in n_ind_set_param.index_w2:
+    print(ind)
+    break
 new_population = mutate(ind_test)
+
+new_population = mutate(n_ind_set_param)
 #TODO 
 '''
 -Create the generation
