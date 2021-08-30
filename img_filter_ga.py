@@ -43,11 +43,7 @@ def flat_arr2img(flat_arr):
 
 
 
-#Getting the vector for the images
-# original_image_arr = img2flat_arr(original_image)
-# target_image_arr = img2flat_arr(target_image)
 
-# img.save('image/greyscale.png')
 
 class img():
     def __init__(self, image):
@@ -88,10 +84,11 @@ class individual():
         self.individual_flat_arr_img = individual_flat_arr_img
         return self.individual_flat_arr_img
     def fitness_score(self):
-        # self.fitness = self.individual_flat_arr_img -self.target_arr
+        # self.fitness = self.individual_flat_arr_img -self.target_arr #vector
+        # self.fitness = distance.euclidean(ind1.individual_flat_arr_img,ind1.target_arr)
         self.fitness =  np.linalg.norm(self.individual_flat_arr_img -self.target_arr)
         return self.fitness
-    def individual_flat_arr2img(self): #TODO work on it!
+    def individual_flat_arr2img(self):
         '''
         Returning back to image from flat array and shape
         '''
@@ -99,9 +96,9 @@ class individual():
         output_individual_image = Image.fromarray(output_arr)
         self.output_individual_image = output_individual_image
         return self.output_individual_image
-    def save_gray_scale_img(self):
+    def save_ind_output_img(self):
         self.output_individual_image.save('image_dataset/individual_image.png')
-    def show_gray_scale_img(self):
+    def show_ind_output_img(self):
         self.output_individual_image.show()
     
 
@@ -113,7 +110,7 @@ original_image = Image.open('image_dataset/canada-best-lakes-moraine-lake.jpg')
 
 # original_image.show()
 
-#Testing
+#Tests for img class
 img = img(original_image)
 img.show_original_img()
 img.show_gray_scale_img()
@@ -123,21 +120,34 @@ img.gray_scale
 img.gray_scale_flat_arr
 img.shape
 
+#tests for individual class
 ind1 = individual()
 ind1.individual_output_img()
 ind1.fitness_score()
 ind1.individual_flat_arr2img()
-ind1.show_gray_scale_img()
-
 ind1.individual_output_img()
-ind1.show_gray_scale_img
-
-
+ind1.show_ind_output_img
 np.linalg.norm(ind1.individual_flat_arr_img -ind1.target_arr)
+from scipy.spatial import distance
 distance.euclidean(ind1.individual_flat_arr_img,ind1.target_arr)
 
-len(ind1.index_w1)
-len(ind1.w1)
+print(len(ind1.index_w1))
+print(len(ind1.w1))
+
+
+#TODO 
+'''
+-Create the generation
+-Create the selection function
+-mutation
+https://towardsdatascience.com/simple-genetic-algorithm-by-a-simple-developer-in-python-272d58ad3d19
+'''
+
+
+
+
+
+
 # ind1 = individual()
 
 # test = img_individual(original_image)
@@ -145,7 +155,11 @@ len(ind1.w1)
 # test.img_show()
 # target.flat_arr2img()
 # target = img(target_image)
+#Getting the vector for the images
+# original_image_arr = img2flat_arr(original_image)
+# target_image_arr = img2flat_arr(target_image)
 
+# img.save('image/greyscale.png')
 
 
 #Create weights
