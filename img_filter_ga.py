@@ -19,9 +19,7 @@ from PIL import Image
 import numpy as np
 import random
 
-import os
-path_folder = 'C:/Users/sande/OneDrive/Masters Data Science/4º Semester/Bio-Inspired AI/Project/image_filter/'
-os.chdir(path_folder)
+
 
 def img2flat_arr(image_jpg):
     global shape,flat_arr
@@ -38,11 +36,6 @@ def flat_arr2img(flat_arr):
     output_image.save('image_dataset/output_image.png')
     output_image.show()
     return output_image
-
-
-
-
-
 
 
 class img():
