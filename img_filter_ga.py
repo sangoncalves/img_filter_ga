@@ -136,6 +136,7 @@ for _ in range(population_size):
 #weights -> +- 0.0001*k
 #index -> binary change. 
 def mutate(individual):
+    print('NOT MUTATED: ',len(individual.index_w1),len(individual.index_w2),len(individual.index_w3))
     population = []
     prob1 = random.uniform(0, 1)
     if prob1>0.6:
@@ -192,6 +193,7 @@ def mutate(individual):
             else:
                 iw3_list.append(0)
     # print(w1_mutated,w2_mutated,w3_mutated,iw1_list,iw2_list,iw3_list)
+    print('MUTATED: ',len(iw1_list),len(iw2_list),len(iw3_list))
     new_ind = new_individual(w1=w1_mutated,w2=w2_mutated,w3=w3_mutated,index_w1=iw1_list,index_w2=iw2_list,index_w3=iw3_list)
     population.append(new_ind)
     return population      
@@ -210,6 +212,7 @@ class new_individual():
         self.len_flat_arr = len(self.origin)
         self.w1, self.w2, self.w3=w1,w2,w3
         self.index_w1,self.index_w2,self.index_w3 = index_w1,index_w2,index_w3
+        print('new_individual: ',len(index_w1),len(index_w2),len(index_w3))
         # print( index_w1,index_w2,index_w3)
         self.individual_output_img()
         self.fitness_score()
@@ -223,14 +226,18 @@ class new_individual():
         # self.fitness = self.individual_flat_arr_img -self.target_arr #vector
         # self.fitness = distance.euclidean(ind1.individual_flat_arr_img,ind1.target_arr)
         self.fitness =  np.linalg.norm(self.individual_flat_arr_img -self.target_arr)
+        print(self.fitness)
         return self.fitness
     def individual_flat_arr2img(self):
         '''
         Returning back to image from flat array and shape
         '''
+        print('shape: ',shape)
         output_arr = np.asarray(self.individual_flat_arr_img).reshape(self.shape)
+        # print('output_arr: ',output_arr)
         # output_individual_image = Image.fromarray(output_arr)
         output_individual_image = Image.fromarray((output_arr * 255).astype(np.uint8))
+        # print('output_individual_image: ', output_individual_image)
         self.output_individual_image = output_individual_image
         return self.output_individual_image
     def save_ind_output_img(self):
@@ -282,13 +289,16 @@ distance.euclidean(ind1.individual_flat_arr_img,ind1.target_arr)
 print(len(ind1.index_w1))
 print(len(ind1.w1))
 
+img = img(original_image)
 ind_test = individual()
-self.fitness =  np.linalg.norm(ind_test.individual_flat_arr_img -ind_test.target_arr)
-
+# np.linalg.norm(ind_test.individual_flat_arr_img -ind_test.target_arr)
 w1,w2,w3 = ind_test.w1, ind_test.w2, ind_test.w3
 index_w1,index_w2,index_w3 = ind_test.index_w1,ind_test.index_w2,ind_test.index_w3
-
 n_ind_set_param = new_individual(w1,w2,w3,index_w1,index_w2,index_w3)
+new_population = mutate(n_ind_set_param)
+
+
+
 n_ind_set_param.index_w2
 len(n_ind_set_param.index_w2)
 for ind in n_ind_set_param.index_w2:
@@ -296,7 +306,6 @@ for ind in n_ind_set_param.index_w2:
     break
 new_population = mutate(ind_test)
 
-new_population = mutate(n_ind_set_param)
 #TODO 
 '''
 -Create the generation
