@@ -124,11 +124,11 @@ class individual():
 #loading Images
 original_image = Image.open('image_dataset/canada-best-lakes-moraine-lake.jpg')
 
-population =[]
-population_size=100
-for _ in range(population_size):
-    ind = individual()
-    population.append(ind)
+# population =[]
+# population_size=100
+# for _ in range(population_size):
+#     ind = individual()
+#     population.append(ind)
 
 
 
@@ -136,7 +136,7 @@ for _ in range(population_size):
 #weights -> +- 0.0001*k
 #index -> binary change. 
 def mutate(individual):
-    print('NOT MUTATED: ',len(individual.index_w1),len(individual.index_w2),len(individual.index_w3))
+    print('NOT MUTATED Index: ',len(individual.index_w1),len(individual.index_w2),len(individual.index_w3))
     population = []
     prob1 = random.uniform(0, 1)
     if prob1>0.6:
@@ -176,6 +176,8 @@ def mutate(individual):
                 iw1_list.append(1)
             else:
                 iw1_list.append(0)
+        else:
+            iw1_list.append(index_weight)
     iw2_list = []
     for index_weight in individual.index_w2:
         prob = random.uniform(0, 1)
@@ -184,6 +186,8 @@ def mutate(individual):
                 iw2_list.append(1)
             else:
                 iw2_list.append(0)
+        else:
+            iw2_list.append(index_weight)
     iw3_list = []
     for index_weight in individual.index_w3:
         prob = random.uniform(0, 1)
@@ -192,8 +196,10 @@ def mutate(individual):
                 iw3_list.append(1)
             else:
                 iw3_list.append(0)
+        else:
+            iw3_list.append(index_weight)
     # print(w1_mutated,w2_mutated,w3_mutated,iw1_list,iw2_list,iw3_list)
-    print('MUTATED: ',len(iw1_list),len(iw2_list),len(iw3_list))
+    print('MUTATED Index: ',len(iw1_list),len(iw2_list),len(iw3_list))
     new_ind = new_individual(w1=w1_mutated,w2=w2_mutated,w3=w3_mutated,index_w1=iw1_list,index_w2=iw2_list,index_w3=iw3_list)
     population.append(new_ind)
     return population      
@@ -263,31 +269,31 @@ class new_individual():
 
 
 
-#cross-over
+# #cross-over
 
-#Tests for img class
-img = img(original_image)
-img.show_original_img()
-img.show_gray_scale_img()
-img.original
-img.original_flat_arr
-img.gray_scale
-img.gray_scale_flat_arr
-img.shape
+# #Tests for img class
+# img = img(original_image)
+# img.show_original_img()
+# img.show_gray_scale_img()
+# img.original
+# img.original_flat_arr
+# img.gray_scale
+# img.gray_scale_flat_arr
+# img.shape
 
-#tests for individual class
-ind1 = individual()
-ind1.individual_output_img()
-ind1.fitness_score()
-ind1.individual_flat_arr2img()
-ind1.individual_output_img()
-ind1.show_ind_output_img
-np.linalg.norm(ind1.individual_flat_arr_img -ind1.target_arr)
-from scipy.spatial import distance
-distance.euclidean(ind1.individual_flat_arr_img,ind1.target_arr)
+# #tests for individual class
+# ind1 = individual()
+# ind1.individual_output_img()
+# ind1.fitness_score()
+# ind1.individual_flat_arr2img()
+# ind1.individual_output_img()
+# ind1.show_ind_output_img
+# np.linalg.norm(ind1.individual_flat_arr_img -ind1.target_arr)
+# from scipy.spatial import distance
+# distance.euclidean(ind1.individual_flat_arr_img,ind1.target_arr)
 
-print(len(ind1.index_w1))
-print(len(ind1.w1))
+# print(len(ind1.index_w1))
+# print(len(ind1.w1))
 
 img = img(original_image)
 ind_test = individual()
